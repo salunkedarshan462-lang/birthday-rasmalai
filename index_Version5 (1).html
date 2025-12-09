@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Birthday Card for My Rasmalai</title>
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #c19afc 0%, #7d4ac0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .card-container {
+      perspective: 900px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .card {
+      width: 400px;
+      height: 300px;
+      max-width: 98vw;
+      max-height: 74vw;
+      border: 8px solid #8742a6;
+      border-radius: 22px;
+      box-shadow: 0 12px 80px #7635bf44;
+      background: linear-gradient(135deg, #e4daff 0%, #d5befa 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      padding: 0;
+      position: relative;
+      overflow: visible;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+      animation: fadein-card 1s forwards;
+      user-select: none;
+    }
+    @keyframes fadein-card {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .card-frame {
+      width: 88%;
+      height: 76%;
+      margin: auto;
+      box-sizing: border-box;
+      background: rgba(255,255,255,0.4);
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(132, 66, 166, 0.09);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 25px 20px;
+      font-size: 1.25rem;
+      color: #6d479e;
+      text-align: center;
+      word-break: break-word;
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+      min-height: 70px;
+      opacity: 1;
+      transition: opacity 0.55s cubic-bezier(.41,.29,.31,.97), transform 0.55s cubic-bezier(.41,.29,.31,.97);
+      will-change: opacity, transform;
+    }
+    .card-frame-leave {
+      opacity: 0;
+      transform: translateY(28px) scale(0.97);
+    }
+    .card-frame-enter {
+      opacity: 0;
+      transform: translateY(-22px) scale(0.97);
+    }
+    .card-frame-appear {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .sparks-bg {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      border-radius: 16px;
+    }
+    .prev-btn {
+      margin-top: 14px;
+      background: linear-gradient(90deg, #8742a6 10%, #c19afc 90%);
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 10px;
+      font-size: 1.08rem;
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: 0 2px 12px rgba(112,63,147,0.06);
+      z-index: 10;
+      transition: background 0.23s;
+      position: relative;
+    }
+    .prev-btn:disabled {
+      background: #d2b2e0;
+      color: #a59eb8;
+      cursor: default;
+    }
+    /* Stickers! */
+    .sticker {
+      position: absolute;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.5s, transform 0.5s;
+      opacity: 0;
+    }
+    .sticker.star {
+      left: 15%; top: 5%;
+      width: 44px; height:44px;
+      opacity: 1;
+      animation: star-slide 1.4s cubic-bezier(.4,0,.8,1) infinite;
+    }
+    @keyframes star-slide {
+      0%    {opacity:0; transform: rotate(-17deg) scale(0.8);}
+      10%   {opacity:1; transform: rotate(-7deg) scale(1);}
+      50%   {opacity:1; transform: rotate(-5deg) scale(1.12);}
+      100%  {opacity:0; transform: rotate(-14deg) scale(0.8);}
+    }
+    /* cake positioned slightly below card edge */
+    .sticker.cake {
+      right: 16%;
+      bottom: -8px;
+      width: 62px;
+      height: 62px;
+      opacity: 1;
+      animation: cake-bounce 2s ease-in-out infinite;
+    }
+    @keyframes cake-bounce {
+      0%,100% { transform: scale(1);}
+      25% { transform: scale(1.13);}
+      50% { transform: scale(0.98);}
+      75% { transform: scale(1.10);}
+    }
+    .sticker.visible { opacity: 1; }
+    @media (max-width: 500px) {
+      .card {
+        width: 98vw;
+        height: 74vw;
+        min-height: 220px;
+      }
+      .card-frame {
+        font-size: 1.03rem;
+        padding: 11px 8px;
+      }
+      /* mobile: keep cake slightly below edge but not too far */
+      .sticker.cake { bottom: 6%; width: 50px; height: 50px; right: 14%; }
+      .sticker { width: 38px !important; height: 38px !important;}
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div id="card" class="card">
+      <canvas id="sparks" class="sparks-bg"></canvas>
+      <!-- Stickers (SVG, hidden and shown per page) -->
+      <div id="starSticker" class="sticker star">
+        <svg viewBox="0 0 96 96" width="100%" height="100%">
+          <polygon points="48,9 58,36 87,36 63,53 73,80 48,62 23,80 33,53 9,36 38,36" fill="#ffe459" stroke="#c2a102" stroke-width="4"/>
+        </svg>
+      </div>
+      <div id="cakeSticker" class="sticker cake">
+        <svg viewBox="0 0 96 96" width="100%" height="100%">
+          <ellipse cx="48" cy="72" rx="26" ry="13" fill="#e6afb8"/>
+          <rect x="23" y="45" width="50" height="28" rx="13" fill="#fff3c1" stroke="#d99f92" stroke-width="3"/>
+          <rect x="23" y="56" width="50" height="14" rx="7" fill="#f7c1da" stroke="#d99f92" stroke-width="2"/>
+          <rect x="42" y="37" width="14" height="17" rx="4" fill="#ffe459"/>
+          <ellipse cx="49" cy="37" rx="3" ry="4.5" fill="#fdabbe"/>
+        </svg>
+      </div>
+      <div id="cardFrame" class="card-frame">
+        Tap to open
+      </div>
+    </div>
+    <button id="prevBtn" class="prev-btn" disabled>Previous</button>
+  </div>
+  <script>
+    // Message pages (new page appended at the end)
+    const pages = [
+      { text: "Tap to open", tap: true },
+      { text: "Hello love", tap: true },
+      { text: "You’re the best person in my life.<br><span style='font-size:1rem;'>Here are some messages for you...</span>", tap: true },
+      { text: `Happy Birthday my rasmalai!<br>
+      <span style='font-size:1.03rem; display:block; margin-top:7px;'>
+      I had made some plans for your birthday, but because of the situation, I couldn’t make them happen.<br>
+      But remember this — I still love you, and I always will till the very end.
+      </span>`, tap: true },
+      { text: `I don’t know how happy you’ve been in these past three months, but to be honest, life without you has been destroying me from the inside.<br><br>
+      I know I should stay positive on your birthday, but the truth is, I really love you — and I always will.`, tap: true },
+      { text: `I don’t know if this will work or not, but I’m still making it for you. Maybe it might look boring to you, but honestly, it took me 20 days of coding to make it. I’ll show you everything when we meet.`, tap: true },
+      { text: `You don’t know this, but you’re the best creation God has ever made, and I can proudly say that you love me. You’re the reason for my happiness, and I’m truly excited for the time when we’ll be back together in a relationship. Aren’t you??`, tap: true },
+      { text: `If I had a choice to live an afterlife, I would still choose you. Anyone can die for you because you are the perfect one. I love your talking, I miss your presence, and if you ever feel insecure about yourself, just come to me — I’ll remind you of your beauty. I’m the luckiest person to have you, my sweetheart.`, tap: true },
+      { text: `Sorry, actually I was going to place your images on this page but it's a bit harder.<br>I'll make a separate edit of your vids.`, tap: true },
+      { text: `listen darling in an every situation im with you doesn't matter you're wrong or right I'll always be in your side idk y this greeting card look like love letter 😂<br><br>but still you are the perfect one for me and you are my first love definitely in future we'll celebrate your birthday my birthday together`, tap: true }
+    ];
+
+    const card = document.getElementById('card');
+    const cardFrame = document.getElementById('cardFrame');
+    const prevBtn = document.getElementById('prevBtn');
+    const starSticker = document.getElementById('starSticker');
+    const cakeSticker = document.getElementById('cakeSticker');
+    let pageIdx = 0;
+
+    function showStickers(idx) {
+      starSticker.classList.remove("visible");
+      cakeSticker.classList.remove("visible");
+      if (idx === 2) starSticker.classList.add("visible");
+      if (idx === 3) cakeSticker.classList.add("visible");
+      if (idx >= 4) {
+        starSticker.classList.add("visible");
+        cakeSticker.classList.add("visible");
+      }
+    }
+
+    function smoothPageTransition(newIdx, direction = 1) {
+      const leaveClass = "card-frame-leave";
+      const enterClass = "card-frame-enter";
+      const appearClass = "card-frame-appear";
+      cardFrame.classList.remove(leaveClass, enterClass, appearClass);
+
+      cardFrame.classList.add(leaveClass);
+      setTimeout(() => {
+        cardFrame.classList.remove(leaveClass);
+
+        cardFrame.classList.add(enterClass);
+        cardFrame.innerHTML = pages[newIdx].text;
+        prevBtn.disabled = newIdx <= 0;
+        showStickers(newIdx);
+
+        setTimeout(() => {
+          cardFrame.classList.remove(enterClass);
+          cardFrame.classList.add(appearClass);
+        }, 40);
+
+        setTimeout(() => {
+          cardFrame.classList.remove(appearClass);
+        }, 600);
+
+      }, 520);
+    }
+
+    function nextPage() {
+      if (pageIdx < pages.length - 1) {
+        smoothPageTransition(pageIdx + 1, 1);
+        pageIdx++;
+      }
+    }
+    function prevPage() {
+      if (pageIdx > 0) {
+        smoothPageTransition(pageIdx - 1, -1);
+        pageIdx--;
+      }
+    }
+
+    card.addEventListener('click', () => {
+      if (pages[pageIdx].tap && pageIdx < pages.length - 1) nextPage();
+    });
+    prevBtn.addEventListener('click', prevPage);
+
+    function firstPageAppear() {
+      cardFrame.innerHTML = pages[0].text;
+      cardFrame.classList.add("card-frame-appear");
+      setTimeout(() => cardFrame.classList.remove("card-frame-appear"), 600);
+      showStickers(0);
+      prevBtn.disabled = true;
+    }
+    firstPageAppear();
+
+    // Sparkling lights animation
+    const sparks = document.getElementById('sparks');
+    function resizeSparks() {
+      let w = cardFrame.offsetWidth, h = cardFrame.offsetHeight;
+      sparks.width = w; sparks.height = h;
+    }
+    setTimeout(resizeSparks,150);
+    window.addEventListener('resize', resizeSparks);
+
+    const SPARK_COUNT = 42;
+    let sparkles = [];
+    function makeSparkles() {
+      sparkles = [];
+      for (let i = 0; i < SPARK_COUNT; i++) {
+        sparkles.push({
+          x: Math.random() * sparks.width,
+          y: Math.random() * sparks.height,
+          r: 1.1 + Math.random() * 2.7,
+          alpha: 0.58 + Math.random() * 0.4,
+          dx: 0.7 - Math.random() * 1.4,
+          dy: -0.8 + Math.random() * 1.6,
+          phase: Math.random() * Math.PI * 2,
+          color: `rgba(${170 + Math.floor(Math.random() * 60)},${130 + Math.floor(Math.random() * 80)},${250},.9)`
+        });
+      }
+    }
+    function drawSparkles() {
+      const ctx = sparks.getContext('2d');
+      ctx.clearRect(0, 0, sparks.width, sparks.height);
+      for (let s of sparkles) {
+        ctx.save();
+        ctx.globalAlpha = s.alpha + 0.32 * Math.sin(Date.now() / 380 + s.phase);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
+        ctx.fillStyle = s.color;
+        ctx.shadowColor = "#fff8";
+        ctx.shadowBlur = 7;
+        ctx.fill();
+        ctx.restore();
+
+        s.x += s.dx * 0.3;
+        s.y += s.dy * 0.3;
+        s.alpha += (0.57 - Math.random() * 1.16) * 0.008;
+        if (s.x < 0 || s.x > sparks.width || s.y < 0 || s.y > sparks.height || s.alpha < 0.38) {
+          s.x = Math.random() * sparks.width;
+          s.y = Math.random() * sparks.height;
+          s.r = 1.1 + Math.random() * 2.7;
+          s.alpha = 0.6 + Math.random() * 0.5;
+          s.dx = 0.7 - Math.random() * 1.4;
+          s.dy = -0.8 + Math.random() * 1.6;
+          s.phase = Math.random() * Math.PI * 2;
+        }
+      }
+      requestAnimationFrame(drawSparkles);
+    }
+    function startSparks() {
+      resizeSparks();
+      makeSparkles();
+      drawSparkles();
+    }
+    setTimeout(startSparks, 270);
+  </script>
+</body>
+</html>
